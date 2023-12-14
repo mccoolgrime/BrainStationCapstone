@@ -21,8 +21,8 @@
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "C:\\Users\\lisa_\\AppData\\Local\\Temp\\ipykernel_32644\\1662798607.py:1: DtypeWarning: Columns (15,26,29,30,31) have mixed types. Specify dtype option on import or set low_memory=False.\n",
-      "  data_gs = pd.read_csv(\"./observations-gregtasney.csv\")\n"
+      "C:\\Users\\lisa_\\AppData\\Local\\Temp\\ipykernel_7724\\3140657315.py:1: DtypeWarning: Columns (15,26,29,30,31) have mixed types. Specify dtype option on import or set low_memory=False.\n",
+      "  data_gs = pd.read_csv(\"../data/observations-gregtasney.csv\")\n"
      ]
     },
     {
@@ -247,7 +247,7 @@
     }
    ],
    "source": [
-    "data_gs = pd.read_csv(\"./observations-gregtasney.csv\")\n",
+    "data_gs = pd.read_csv(\"../data/observations-gregtasney.csv\")\n",
     "data_gs.head()"
    ]
   },
