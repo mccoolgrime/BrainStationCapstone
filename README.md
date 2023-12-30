@@ -40,29 +40,26 @@ Data on the poaching of plants is difficult to obtain although [the United Natio
 ## Description of Dataset
   For construction of this dataset, see *Spicata dataset* above. Below are the columns of data I found relevant for EDA and modeling for the first round of initial modeling. Future rounds may pull in other columns available via iNaturalist.
   - __id__: int of unique id of species, appears to be assigned at upload, generated consecutively in time and therefore directly correlated to the "created_at" column
-  - __time_observed_at__: timestamp of when the observation was made given in UTC time *technically needs to be converted from object to timestamp*
+  - __time_observed_at__: timestamp of when the observation was made given in UTC time *needs to be converted from object to timestamp*
   - __user_id__: int of unique numerical id of user, appears to be assigned when account is created, generated consecutively in time and therefore small numbers point to early adopters
-  - __created_at__: timestamp of when the observation was uploaded to iNaturalist given in UTC time *technically needs to be converted from object to timestamp*
-  - __quality_grade__: string, "research" indicates at least two users agree on the species level AND more than half of the user ids for this observation are in agreement; "needs_id" if the observation contains all the necessary information required to make "research grade" but is missing the needed ratio of user identifications; "casual" means it is missing important data components and cannot be used for "research grade". *This columns needs to be hot-encoded*
-  - __num_identification_agreements__: int, I *think* that this refers to the number of users who agree on the final id of the observation. HOWEVER, it *could mean* number of identifications that agree with the original id chosen by the user. *To be sure would require more cross-check research.*
-  - __num_identification_disagreements__: int, The same question as above, but records the disagreements rather than agreements.
+  - __created_at__: timestamp of when the observation was uploaded to iNaturalist given in UTC time *needs to be converted from object to timestamp*
+  - __quality_grade__: string, "research" indicates at least two users agree on the species level AND more than half of the user ids for this observation are in agreement; "needs_id" if the observation contains all the necessary information required to make "research grade" but is missing the needed ratio of user identifications; "casual" means it is missing important data components and cannot be used for "research grade". *This column can be hot-encoded*
+  - __num_identification_agreements__: int, the number of additional users who agree with the first user who landed at the "species_guess"
+  - __num_identification_disagreements__: int, the number of users who disagree with the "species_guess" (doesn't include "withdrawn" identifications for users who originally disagreed but withdrew earlier contradicting guesses)
   - __captive_cultivated__: boolean, [further information here](https://www.inaturalist.org/pages/help#:~:text=Quality%20Assessment%20section.-,What%20does%20captive%20%2F%20cultivated%20mean%3F,to%20be%20then%20and%20there.)
   - __latitude__: float, latitude of the observation--it is my deduction that this is associated with the public_positional_accuracy
   - __longitude__: float, see above
   - __positional_accuracy__: float, distance in meters, it is my deduction that this is associated with private lat/lon coordinates that are not available in this dataset or publicly--the accuracy of the posting, before geoprivacy is applied. [See here for more information](https://www.inaturalist.org/posts/2035-observation-location-accuracy)
   - __public_postitional_accuracy__: float, distance in meters--it is my deduction that this is the accuracy of the given "latitude" and "longitude" available in this dataset. See "positional_accuracy" for more information
-  - __geoprivacy__: converted to boolean--either "obscured" or not, it is my deduction that this is in reference to a user's personal choice to make an observation obscured or not *name of this category should be changed for clarity*
   - __coordinates_obscured__: boolean--requires more exploration, but likely an umbrella category for both geoprivacy and taxon_geoprivacy
-  - __species_guess__: string, the guess, if given, of the species when the id was made
+  - __species_guess__: string, not actually at the taxon species level: the most specific taxon "guess" that is provided by the consensus/majority of "guesses" provided by user identifications--this is an if/then process: if all users are in agreement, this is the guess; if users disagree, then the guess with more than half the votes becomes the "guess" *double check this criteria*, if neither of these two criteria is satisfied, the "guess" defaults to the next higher taxon that would include all user guesses which can be as broad as "Life"
   - __scientific_name__: string, the scientific name of the most granular taxon level at which the observation was identified without contradiction
   - __common_name__: string, a "common" translation of the scientific name
-  - __taxon_genus_name__: string, the genus of the observation if identified at this level
-  - __taxon_species_name__: string, the species of the observation if identified at this level
-  - __obscured__: boolean, dummy variable from taxon_geoprivacy; 1 means the observation was obscured due to its taxon--likely a conservation reason *name of this category should be changed for clarity*
-  - __open__: boolean, dummy variable from taxon_geoprivacy; 1 means the observation was open *name of this category should be changed for clarity*
-  - __Animalia__: boolean, dummy from taxon_kingdom_name, 1 means the observation was identified to be part of the animal kingdom
-  - __Fungi__: boolean, dummy from taxon_kingdom_name, 1 means the observation was identified to be part of the fungi kingdom
-  - __Plantae__: boolean, dummy from taxon_kingdom_name, 1 means the observation was identified to be part of the plant kingdom
+  - __taxon_kingdom_name__: string, based on the "species guess", the kingdom of the observation if identified at this level *for later hot-encoding, only Animal, Plant and Fungi are recommended*
+  - __taxon_genus_name__: string, based on the "species guess",the genus of the observation if identified at this level 
+  - __taxon_species_name__: string, the species of the observation, based on the "species guess" if identified at this level
+  - __geoprivacy_obscured__: boolean--1 means observation was marked "obscured" for geoprivacy, 0 means it was null in original dataset, it is my deduction that this is in reference to a user's personal choice to make an observation obscured or not 
+  - __taxon_geoprivacy_obscured__: boolean, 1 means observation was marked "obscured", 0 was "open" or null in the original dataset, it is my deduction that this in reference to conservation measures taken according to the taxon if a taxon is marked as protected
   - __minute_diff__: float, number of minutes between previous observation and this one when observations sorted by user and then time_observed_at. Initial observations for each user assigned the value -0.001
   - __km_diff__: float, number of km between previous observation and this one when observations sorted by user and then time_observed_at. Initial observations for each user assigned the value -0.001
    
